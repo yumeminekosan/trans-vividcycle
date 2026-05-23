@@ -15,7 +15,7 @@ function App() {
   const [personas, setPersonas] = useState<any[]>([]);
   const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
-  const [view, setView] = useState<'home' | 'personas' | 'relations' | 'communities'>('home');
+  const [view, setView] = useState<'home' | 'browse' | 'personas' | 'relations' | 'communities'>('browse');
   const [showAuth, setShowAuth] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || '/api');
@@ -82,7 +82,7 @@ function App() {
     setApiUrl(url);
   };
 
-  if (false) {
+  if ((view as string) === 'browse') {
     return <BrowsePage apiUrl={apiUrl} />;
   }
 
@@ -96,6 +96,10 @@ function App() {
         </div>
 
         <div className="nav-menu">
+          <div className={`nav-item ${view === 'browse' ? 'active' : ''}`} onClick={() => setView('browse')}>
+            <span className="nav-icon">🔍</span>
+            <span className="nav-label">档案浏览</span>
+          </div>
           <div className={`nav-item ${view === 'home' ? 'active' : ''}`} onClick={() => setView('home')}>
             <span className="nav-icon">🏠</span>
             <span className="nav-label">我的图谱</span>

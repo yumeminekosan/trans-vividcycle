@@ -476,9 +476,26 @@ body {
   
   .left-panel {
     width: 100%;
-    height: 40vh;
+    height: auto;
+    max-height: 50vh;
     border-right: none;
     border-bottom: 1px solid #2a2a35;
+  }
+  
+  .operator-list {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  .operator-item {
+    min-width: 200px;
+    margin-bottom: 0;
+  }
+  
+  .right-panel {
+    height: 50vh;
   }
   
   .profile-card {
@@ -489,5 +506,28 @@ body {
   
   .info-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .section-tabs {
+    overflow-x: auto;
+  }
+  
+  .tab-btn {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel-header h1 {
+    font-size: 1em;
+  }
+  
+  .profile-avatar-large {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-details h3 {
+    font-size: 1.2em;
   }
 }
