@@ -11,6 +11,8 @@ function PersonaForm({ apiUrl, token, onPersonaCreated }: PersonaFormProps) {
   const [bio, setBio] = useState('');
   const [pronouns, setPronouns] = useState('');
   const [tags, setTags] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [links, setLinks] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,7 +30,9 @@ function PersonaForm({ apiUrl, token, onPersonaCreated }: PersonaFormProps) {
           name,
           bio,
           pronouns,
-          tags: tags.split(',').map(t => t.trim()).filter(Boolean)
+          tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+          avatar,
+          links: links.split(',').map(l => l.trim()).filter(Boolean)
         })
       });
 
@@ -44,6 +48,8 @@ function PersonaForm({ apiUrl, token, onPersonaCreated }: PersonaFormProps) {
       setBio('');
       setPronouns('');
       setTags('');
+      setAvatar('');
+      setLinks('');
     } catch (error) {
       console.error('Error creating persona:', error);
       alert('Failed to create persona');
@@ -90,6 +96,26 @@ function PersonaForm({ apiUrl, token, onPersonaCreated }: PersonaFormProps) {
           value={tags}
           onChange={(e) => setTags(e.target.value)}
           placeholder="transfem, hacker, artist"
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Avatar URL:</label>
+        <input
+          type="text"
+          value={avatar}
+          onChange={(e) => setAvatar(e.target.value)}
+          placeholder="https://example.com/avatar.jpg"
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Links (comma separated):</label>
+        <input
+          type="text"
+          value={links}
+          onChange={(e) => setLinks(e.target.value)}
+          placeholder="https://twitter.com/username, https://github.com/username"
         />
       </div>
 

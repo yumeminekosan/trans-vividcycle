@@ -14,6 +14,7 @@ function RelationForm({ apiUrl, token, fromPersona, allPersonas, onRelationCreat
   const [visibility, setVisibility] = useState('private');
   const [weight, setWeight] = useState(0.5);
   const [description, setDescription] = useState('');
+  const [bidirectional, setBidirectional] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const relationTypes = [
@@ -21,7 +22,12 @@ function RelationForm({ apiUrl, token, fromPersona, allPersonas, onRelationCreat
     'emotionally_safe_person',
     'co_creator',
     'mentor',
-    'former_partner'
+    'former_partner',
+    'family',
+    'colleague',
+    'romantic_partner',
+    'acquaintance',
+    'custom'
   ];
 
   const visibilityOptions = [
@@ -48,7 +54,8 @@ function RelationForm({ apiUrl, token, fromPersona, allPersonas, onRelationCreat
           type,
           visibility,
           weight,
-          description
+          description,
+          bidirectional
         })
       });
 
@@ -140,6 +147,17 @@ function RelationForm({ apiUrl, token, fromPersona, allPersonas, onRelationCreat
           rows={2}
           placeholder="Optional description..."
         />
+      </div>
+
+      <div className="form-group">
+        <label>
+          <input
+            type="checkbox"
+            checked={bidirectional}
+            onChange={(e) => setBidirectional(e.target.checked)}
+          />
+          Bidirectional (requires confirmation)
+        </label>
       </div>
 
       <button type="submit" disabled={loading || !toPersonaId}>
