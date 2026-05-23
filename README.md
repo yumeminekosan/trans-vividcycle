@@ -6,17 +6,36 @@
 
 ```
 docs/
-├── 00_project/      # 项目层：愿景、目标、路线图、哲学
-├── 01_product/      # 产品层：用户流程、功能、交互规则
-├── 02_architecture/ # 系统层：架构、数据库、API、部署
-├── 03_backend/      # 后端实现：API、路由、服务、数据库
-├── 04_frontend/     # 前端实现：组件、状态、路由、设计
-├── 05_graph/        # 图谱系统：关系类型、算法、推荐、布局
-├── 06_security/     # 安全：威胁模型、隐私、屏蔽、限流
-├── 07_testing/      # 测试：计划、单元、集成、安全、负载
-├── 08_federation/   # 联邦化：ActivityPub、Mastodon
-├── 09_operations/   # 运维：部署、监控、日志
-└── 10_memory/       # 记忆：决策、教训、灵感、未来
+├── 00_project/          # 项目层：愿景、目标、路线图、哲学
+│   ├── VISION.md
+│   ├── GOALS.md
+│   ├── ROADMAP.md
+│   ├── NON_GOALS.md
+│   ├── DECISIONS.md
+│   ├── PHILOSOPHY.md
+│   └── GLOSSARY.md
+├── 01_product/          # 产品层：用户看到什么
+│   ├── concept/         # 概念设计
+│   ├── ux/              # 用户体验
+│   ├── lore/            # 世界观/背景
+│   ├── moderation/        # 内容审核
+│   ├── USER_FLOW.md
+│   ├── FEATURE_LIST.md
+│   ├── UX_RULES.md
+│   ├── PERSONA_SYSTEM.md
+│   ├── RELATION_SYSTEM.md
+│   ├── GRAPH_UI.md
+│   └── MODERATION.md
+├── 02_architecture/     # 系统层：架构、数据库、API、部署
+├── 03_backend/          # 后端实现
+├── 04_frontend/         # 前端实现
+├── 05_graph/            # 图谱系统
+├── 06_security/         # 安全
+├── 07_testing/          # 测试
+├── 08_federation/       # 联邦化
+│   └── federation/      # 联邦协议细节
+├── 09_operations/       # 运维
+└── 10_memory/           # 记忆
 ```
 
 ## 快速导航
