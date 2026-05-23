@@ -15,7 +15,7 @@ function App() {
   const [personas, setPersonas] = useState<any[]>([]);
   const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
-  const [view, setView] = useState<'home' | 'browse'>('home');
+  const [view, setView] = useState<'home' | 'browse' | 'personas' | 'relations' | 'communities'>('browse');
   const [showAuth, setShowAuth] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || '/api');
@@ -73,7 +73,6 @@ function App() {
   };
 
   const handleRelationCreated = (_relation: any) => {
-    // Reload graph to show new relation
     if (selectedPersona) {
       handleLoadGraph(selectedPersona.id);
     }
@@ -83,123 +82,180 @@ function App() {
     setApiUrl(url);
   };
 
+  const navItems = [
+    { id: 'browse', icon: '🔍', label: '档案浏览' },
+    { id: 'home', icon: '🏠', label: '我的图谱' },
+    { id: 'personas', icon: '👤', label: '角色管理' },
+    { id: 'relations', icon: '🔗', label: '关系网络' },
+    { id: 'communities', icon: '🏘️', label: '社群' },
+  ];
+
   return (
     <div className="app">
-      <header>
-        <h1>Queer Relationship Atlas</h1>
-        <div className="nav-links">
-          <button 
-            className={view === 'home' ? 'active' : ''} 
-            onClick={() => setView('home')}
-          >
-            🏠 首页
-          </button>
-          <button 
-            className={view === 'browse' ? 'active' : ''} 
-            onClick={() => setView('browse')}
-          >
-            🔍 浏览
-          </button>
+      {/* Sidebar Navigation */}
+      <nav className="sidebar-nav">
+        <div className="logo-section">
+          <h1>🌈 跨性别关系图谱</h1>
+          <p className="subtitle">TRANS VIVID CYCLE</p>
         </div>
-        <div className="auth-section">
+
+        <div className="nav-menu">
+          {navItems.map(item => (
+            <div
+              key={item.id}
+              className={`nav-item ${view === item.id ? 'active' : ''}`}
+              onClick={() => setView(item.id as any)}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-label">{item.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="user-section">
           {user ? (
             <>
-              <span>Welcome, {user.username}</span>
-              <button onClick={() => setShowSettings(true)}>⚙️</button>
-              <button onClick={handleLogout}>Logout</button>
+              <div className="user-info">
+                <div className="user-avatar">👤</div>
+                <span className="user-name">{user.username}</span>
+              </div>
+              <div className="user-actions">
+                <button onClick={() => setShowSettings(true)}>设置</button>
+                <button onClick={handleLogout}>退出</button>
+              </div>
             </>
           ) : (
-            <button onClick={() => setShowAuth(true)}>Login / Register</button>
+            <div className="user-actions">
+              <button onClick={() => setShowAuth(true)} style={{ width: '100%' }}>
+                登录 / 注册
+              </button>
+            </div>
           )}
         </div>
-      </header>
-      
-      {showSettings && (
-        <SettingsModal 
-          apiUrl={apiUrl}
-          onSave={handleApiUrlChange}
-          onClose={() => setShowSettings(false)}
-        />
-      )}
-      
-      {showAuth && (
-        <AuthForm 
-          apiUrl={apiUrl}
-          onLogin={handleLogin}
-          onClose={() => setShowAuth(false)}
-        />
-      )}
-      
-      {view === 'browse' ? (
-        <BrowsePage apiUrl={apiUrl} />
-      ) : (
-        <main>
-          <section className="sidebar">
-          {token && (
-            <>
-              <h2>Create Persona</h2>
-              <PersonaForm 
-                apiUrl={apiUrl}
-                token={token}
-                onPersonaCreated={handlePersonaCreated}
-              />
-            </>
-          )}
-          
-          <h2>Personas</h2>
-          <ul className="persona-list">
-            {personas.map(p => (
-              <li 
-                key={p.id}
-                className={selectedPersona?.id === p.id ? 'selected' : ''}
-                onClick={() => {
-                  setSelectedPersona(p);
-                  handleLoadGraph(p.id);
-                }}
-              >
-                {p.name}
-              </li>
-            ))}
-          </ul>
-          
-          {selectedPersona && token && (
-            <>
-              <h2>Create Relation</h2>
-              <RelationForm
-                apiUrl={apiUrl}
-                token={token}
-                fromPersona={selectedPersona}
-                allPersonas={personas}
-                onRelationCreated={handleRelationCreated}
-              />
-            </>
-          )}
-          
-          {selectedPersona && (
-            <>
-              <h2>Recommendations</h2>
-              <RecommendationPanel 
-                apiUrl={apiUrl}
-                personaId={selectedPersona.id}
-              />
-            </>
-          )}
-          
-          <h2>Communities</h2>
-          <CommunityPanel 
+      </nav>
+
+      {/* Main Content */}
+      <main className="main-content">
+        {showSettings && (
+          <SettingsModal 
             apiUrl={apiUrl}
-            token={token}
+            onSave={handleApiUrlChange}
+            onClose={() => setShowSettings(false)}
           />
-        </section>
+        )}
         
-        <section className="graph-area">
-          <GraphView 
-            data={graphData}
-            onNodeClick={(node) => console.log('Clicked:', node)}
+        {showAuth && (
+          <AuthForm 
+            apiUrl={apiUrl}
+            onLogin={handleLogin}
+            onClose={() => setShowAuth(false)}
           />
-        </section>
-        </main>
-      )}
+        )}
+
+        {view === 'browse' && <BrowsePage apiUrl={apiUrl} />}
+        
+        {view === 'home' && (
+          <>
+            <div className="page-header">
+              <h2><span className="header-icon">🏠</span> 我的关系图谱</h2>
+              <p>管理和探索你的跨性别关系网络</p>
+            </div>
+            
+            <div className="content-layout">
+              <section className="sidebar-content">
+                {token && (
+                  <>
+                    <h3>创建角色</h3>
+                    <PersonaForm 
+                      apiUrl={apiUrl}
+                      token={token}
+                      onPersonaCreated={handlePersonaCreated}
+                    />
+                  </>
+                )}
+                
+                <h3>我的角色</h3>
+                <div className="cards-grid">
+                  {personas.map(p => (
+                    <div 
+                      key={p.id}
+                      className={`persona-card-ark ${selectedPersona?.id === p.id ? 'selected' : ''}`}
+                      onClick={() => {
+                        setSelectedPersona(p);
+                        handleLoadGraph(p.id);
+                      }}
+                    >
+                      <div className="card-header">
+                        <div className="card-avatar">
+                          {p.avatar ? <img src={p.avatar} alt={p.name} /> : p.name[0]}
+                        </div>
+                        <div className="card-title">
+                          <h4>{p.name}</h4>
+                          <span className="pronouns">{p.pronouns}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {selectedPersona && token && (
+                  <>
+                    <h3>创建关系</h3>
+                    <RelationForm
+                      apiUrl={apiUrl}
+                      token={token}
+                      fromPersona={selectedPersona}
+                      allPersonas={personas}
+                      onRelationCreated={handleRelationCreated}
+                    />
+                  </>
+                )}
+                
+                {selectedPersona && (
+                  <>
+                    <h3>推荐</h3>
+                    <RecommendationPanel 
+                      apiUrl={apiUrl}
+                      personaId={selectedPersona.id}
+                    />
+                  </>
+                )}
+              </section>
+              
+              <section className="graph-area">
+                <GraphView 
+                  data={graphData}
+                  onNodeClick={(node) => console.log('Clicked:', node)}
+                />
+              </section>
+            </div>
+          </>
+        )}
+
+        {view === 'personas' && (
+          <div className="page-header">
+            <h2><span className="header-icon">👤</span> 角色管理</h2>
+            <p>管理你的所有角色档案</p>
+          </div>
+        )}
+
+        {view === 'relations' && (
+          <div className="page-header">
+            <h2><span className="header-icon">🔗</span> 关系网络</h2>
+            <p>查看和分析你的关系连接</p>
+          </div>
+        )}
+
+        {view === 'communities' && (
+          <>
+            <div className="page-header">
+              <h2><span className="header-icon">🏘️</span> 社群</h2>
+              <p>加入和管理跨性别社群</p>
+            </div>
+            <CommunityPanel apiUrl={apiUrl} token={token} />
+          </>
+        )}
+      </main>
     </div>
   );
 }

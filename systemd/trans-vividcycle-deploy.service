@@ -1,0 +1,14 @@
+[Unit]
+Description=Auto-deploy Trans Vivid Cycle
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/opt/trans-vividcycle
+ExecStart=/opt/trans-vividcycle/scripts/auto-deploy.sh
+StandardOutput=append:/var/log/trans-vividcycle-deploy.log
+StandardError=append:/var/log/trans-vividcycle-deploy.log
+
+[Install]
+WantedBy=multi-user.target
