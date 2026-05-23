@@ -1,0 +1,267 @@
+.browse-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.browse-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  color: white;
+}
+
+.browse-header h1 {
+  margin: 0 0 10px 0;
+  font-size: 2.5em;
+}
+
+.subtitle {
+  font-size: 1.2em;
+  opacity: 0.9;
+  margin-bottom: 20px;
+}
+
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 1.1em;
+}
+
+.stats-bar span {
+  background: rgba(255,255,255,0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.search-section {
+  margin-bottom: 30px;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: #667eea;
+}
+
+.search-box button {
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-box button:hover {
+  background: #5568d3;
+}
+
+.tags-section {
+  margin-bottom: 30px;
+}
+
+.tags-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.tags-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-button {
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.tag-button:hover {
+  background: #e0e0e0;
+}
+
+.tag-button.active {
+  background: #667eea;
+  color: white;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.personas-list h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.persona-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.persona-card {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.persona-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.persona-card.selected {
+  border: 2px solid #667eea;
+}
+
+.persona-avatar {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.persona-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.persona-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.persona-info .pronouns {
+  margin: 0 0 8px 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.persona-info .bio {
+  margin: 0 0 10px 0;
+  color: #555;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.persona-info .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.persona-info .tag {
+  padding: 4px 10px;
+  background: #f0f0f0;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.graph-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.graph-panel h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.graph-visualization {
+  margin-bottom: 20px;
+}
+
+.graph-svg {
+  width: 100%;
+  height: 300px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.relations-list h4 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.relations-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.relations-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .search-box {
+    flex-direction: column;
+  }
+}

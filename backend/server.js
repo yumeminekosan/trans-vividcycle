@@ -560,6 +560,202 @@ fastify.get('/stats', async () => {
   }
 });
 
+// Search API - public, privacy-respecting
+fastify.get('/search', async (request) => {
+  const { q, type = 'persona', tags, limit = 20, offset = 0 } = request.query;
+  const session = driver.session();
+  try {
+    if (type === 'persona') {
+      // Only show personas with public visibility or that have tags/bio
+      const result = await session.run(
+        `MATCH (p:Persona)
+         WHERE (p.name CONTAINS $q OR p.bio CONTAINS $q OR ANY(tag IN p.tags WHERE tag CONTAINS $q))
+         AND (p.visibility = 'public' OR p.visibility IS NULL OR size(p.tags) > 0)
+         RETURN p
+         ORDER BY p.created_at DESC
+         SKIP $offset LIMIT $limit`,
+        { q, offset: parseInt(offset), limit: parseInt(limit) }
+      );
+      return result.records.map(r => ({
+        ...r.get('p').properties,
+        // Only return safe fields
+        id: r.get('p').properties.id,
+        name: r.get('p').properties.name,
+        bio: r.get('p').properties.bio,
+        pronouns: r.get('p').properties.pronouns,
+        tags: r.get('p').properties.tags,
+        avatar: r.get('p').properties.avatar,
+        links: r.get('p').properties.links
+      }));
+    } else if (type === 'community') {
+      const result = await session.run(
+        `MATCH (c:Community)
+         WHERE c.name CONTAINS $q OR c.description CONTAINS $q
+         RETURN c LIMIT $limit`,
+        { q, limit: parseInt(limit) }
+      );
+      return result.records.map(r => r.get('c').properties);
+    }
+  } finally {
+    await session.close();
+  }
+});
+
+// Browse API - explore the network like Arknights archive
+fastify.get('/browse', async (request) => {
+  const { tag, relation_type, limit = 50, offset = 0 } = request.query;
+  const session = driver.session();
+  try {
+    let query = `
+      MATCH (p:Persona)
+      WHERE (p.visibility = 'public' OR p.visibility IS NULL)
+    `;
+    
+    if (tag) {
+      query += ` AND ANY(t IN p.tags WHERE t = $tag)`;
+    }
+    
+    query += `
+      RETURN p
+      ORDER BY p.created_at DESC
+      SKIP $offset LIMIT $limit
+    `;
+    
+    const result = await session.run(query, { tag, offset: parseInt(offset), limit: parseInt(limit) });
+    
+    // Get relations for these personas
+    const personas = result.records.map(r => r.get('p').properties);
+    const personaIds = personas.map(p => p.id);
+    
+    if (personaIds.length > 0) {
+      const relResult = await session.run(
+        `MATCH (a:Persona)-[r:RELATION]->(b:Persona)
+         WHERE a.id IN $personaIds AND (r.visibility = 'public' OR r.visibility = 'mutual')
+         RETURN a.id as from_id, b.id as to_id, r.type as type, r.weight as weight
+         LIMIT 100`,
+        { personaIds }
+      );
+      
+      return {
+        personas,
+        relations: relResult.records.map(r => ({
+          from: r.get('from_id'),
+          to: r.get('to_id'),
+          type: r.get('type'),
+          weight: r.get('weight')
+        }))
+      };
+    }
+    
+    return { personas, relations: [] };
+  } finally {
+    await session.close();
+  }
+});
+
+// Public graph view - for browsing without login
+fastify.get('/public-graph/:personaId', async (request) => {
+  const { personaId } = request.params;
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (center:Persona {id: $personaId})
+       OPTIONAL MATCH (center)-[r:RELATION {visibility: 'public'}]-(connected:Persona)
+       WHERE connected.visibility = 'public' OR connected.visibility IS NULL
+       RETURN center, collect({
+         persona: connected,
+         relation: r,
+         direction: CASE WHEN startNode(r) = center THEN 'outgoing' ELSE 'incoming' END
+       }) as connections`,
+      { personaId }
+    );
+    
+    if (result.records.length === 0) {
+      return { error: 'Persona not found' };
+    }
+    
+    const center = result.records[0].get('center').properties;
+    const connections = result.records[0].get('connections');
+    
+    const nodes = [{
+      id: center.id,
+      name: center.name,
+      bio: center.bio,
+      tags: center.tags,
+      avatar: center.avatar,
+      pronouns: center.pronouns
+    }];
+    
+    const edges = [];
+    
+    for (const conn of connections) {
+      if (!conn.persona) continue;
+      const p = conn.persona.properties;
+      const r = conn.relation.properties;
+      
+      nodes.push({
+        id: p.id,
+        name: p.name,
+        bio: p.bio,
+        tags: p.tags,
+        avatar: p.avatar,
+        pronouns: p.pronouns
+      });
+      
+      edges.push({
+        source: conn.direction === 'outgoing' ? center.id : p.id,
+        target: conn.direction === 'outgoing' ? p.id : center.id,
+        type: r.type,
+        weight: r.weight
+      });
+    }
+    
+    return { nodes, edges };
+  } finally {
+    await session.close();
+  }
+});
+
+// Tags API - for filtering
+fastify.get('/tags', async () => {
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (p:Persona)
+       UNWIND p.tags as tag
+       RETURN tag, count(*) as count
+       ORDER BY count DESC
+       LIMIT 50`
+    );
+    return result.records.map(r => ({
+      tag: r.get('tag'),
+      count: r.get('count').toNumber()
+    }));
+  } finally {
+    await session.close();
+  }
+});
+
+// Stats API
+fastify.get('/stats', async () => {
+  const session = driver.session();
+  try {
+    const personaCount = await session.run('MATCH (p:Persona) RETURN count(p) as count');
+    const relationCount = await session.run('MATCH ()-[r:RELATION]->() RETURN count(r) as count');
+    const userCount = await session.run('MATCH (u:User) RETURN count(u) as count');
+    const communityCount = await session.run('MATCH (c:Community) RETURN count(c) as count');
+    
+    return {
+      personas: personaCount.records[0].get('count').toNumber(),
+      relations: relationCount.records[0].get('count').toNumber(),
+      users: userCount.records[0].get('count').toNumber(),
+      communities: communityCount.records[0].get('count').toNumber()
+    };
+  } finally {
+    await session.close();
+  }
+});
+
 // Start server
 const start = async () => {
   try {

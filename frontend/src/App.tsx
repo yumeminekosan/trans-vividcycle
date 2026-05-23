@@ -6,6 +6,7 @@ import RelationForm from './components/RelationForm';
 import SettingsModal from './components/SettingsModal';
 import RecommendationPanel from './components/RecommendationPanel';
 import CommunityPanel from './components/CommunityPanel';
+import BrowsePage from './components/BrowsePage';
 import './App.css';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
   const [personas, setPersonas] = useState<any[]>([]);
   const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
+  const [view, setView] = useState<'home' | 'browse'>('home');
   const [showAuth, setShowAuth] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || '/api');
@@ -85,6 +87,20 @@ function App() {
     <div className="app">
       <header>
         <h1>Queer Relationship Atlas</h1>
+        <div className="nav-links">
+          <button 
+            className={view === 'home' ? 'active' : ''} 
+            onClick={() => setView('home')}
+          >
+            🏠 首页
+          </button>
+          <button 
+            className={view === 'browse' ? 'active' : ''} 
+            onClick={() => setView('browse')}
+          >
+            🔍 浏览
+          </button>
+        </div>
         <div className="auth-section">
           {user ? (
             <>
@@ -114,8 +130,11 @@ function App() {
         />
       )}
       
-      <main>
-        <section className="sidebar">
+      {view === 'browse' ? (
+        <BrowsePage apiUrl={apiUrl} />
+      ) : (
+        <main>
+          <section className="sidebar">
           {token && (
             <>
               <h2>Create Persona</h2>
@@ -179,7 +198,8 @@ function App() {
             onNodeClick={(node) => console.log('Clicked:', node)}
           />
         </section>
-      </main>
+        </main>
+      )}
     </div>
   );
 }
