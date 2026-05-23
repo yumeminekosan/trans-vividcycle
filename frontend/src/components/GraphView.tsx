@@ -71,10 +71,9 @@ function GraphView({ data, onNodeClick }: GraphViewProps) {
         },
       ],
       layout: {
-        name: 'force',
-        fit: true,
+        name: 'cose',
         padding: 10,
-      },
+      } as any,
     });
 
     // Click handler

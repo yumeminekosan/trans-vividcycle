@@ -6,11 +6,11 @@ import RelationForm from './components/RelationForm';
 import './App.css';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [personas, setPersonas] = useState([]);
-  const [selectedPersona, setSelectedPersona] = useState(null);
-  const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
+  const [user, setUser] = useState<any>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [personas, setPersonas] = useState<any[]>([]);
+  const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
+  const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
   const [showAuth, setShowAuth] = useState(false);
 
   const API_URL = 'http://localhost:3000';
@@ -35,7 +35,7 @@ function App() {
     }
   };
 
-  const handleLogin = (userData, authToken) => {
+  const handleLogin = (userData: any, authToken: string) => {
     setUser(userData);
     setToken(authToken);
     localStorage.setItem('token', authToken);
@@ -52,12 +52,12 @@ function App() {
     setGraphData({ nodes: [], edges: [] });
   };
 
-  const handlePersonaCreated = (persona) => {
+  const handlePersonaCreated = (persona: any) => {
     setPersonas([...personas, persona]);
     setSelectedPersona(persona);
   };
 
-  const handleLoadGraph = async (personaId) => {
+  const handleLoadGraph = async (personaId: string) => {
     try {
       const response = await fetch(`${API_URL}/graph/${personaId}`);
       const data = await response.json();
@@ -67,7 +67,7 @@ function App() {
     }
   };
 
-  const handleRelationCreated = (relation) => {
+  const handleRelationCreated = (_relation: any) => {
     // Reload graph to show new relation
     if (selectedPersona) {
       handleLoadGraph(selectedPersona.id);
