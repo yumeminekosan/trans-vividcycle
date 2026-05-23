@@ -1,54 +1,39 @@
 # Trans Vivid Cycle
 
-> 跨维度 vivid 周期系统 — 项目文档与架构入口
+> Queer Relationship Atlas — 以关系为核心的身份图谱平台
 
 ## 项目结构
 
 ```
-project-root/
-│
-├── 📋 项目文档
-│   ├── README.md         # 项目总览（本文件）
-│   ├── PLAN.md           # 项目规划与目标定义
-│   ├── ROADMAP.md        # 阶段路线图与里程碑
-│   ├── TODO.md           # 当前待办与任务追踪
-│   └── REMEMBER.md       # 关键决策与上下文记忆
-│
-├── 🏗️ 技术文档
-│   ├── ARCHITECTURE.md   # 系统架构设计
-│   ├── API.md            # 接口定义与调用规范
-│   ├── TESTING.md        # 测试策略与覆盖要求
-│   ├── SECURITY.md       # 安全规范与合规
-│   └── ONBOARDING.md     # 新成员上手指南
-│
-├── 📂 模块目录
-│   ├── docs/             # 详细文档
-│   │   ├── concept/      # 概念设计
-│   │   ├── ux/           # 用户体验
-│   │   ├── lore/         # 世界观/背景设定
-│   │   ├── federation/   # 联邦/分布式架构
-│   │   └── moderation/   # 内容审核机制
-│   ├── frontend/         # 前端实现
-│   ├── backend/          # 后端服务
-│   ├── graph-engine/     # 图计算引擎
-│   ├── infra/            # 基础设施配置
-│   ├── scripts/          # 工具脚本
-│   └── experiments/      # 实验与原型
-│
-└── 🔗 仓库地址
-    https://github.com/yumeminekosan/trans-vividcycle
+docs/
+├── 00_project/      # 项目层：愿景、目标、路线图、哲学
+├── 01_product/      # 产品层：用户流程、功能、交互规则
+├── 02_architecture/ # 系统层：架构、数据库、API、部署
+├── 03_backend/      # 后端实现：API、路由、服务、数据库
+├── 04_frontend/     # 前端实现：组件、状态、路由、设计
+├── 05_graph/        # 图谱系统：关系类型、算法、推荐、布局
+├── 06_security/     # 安全：威胁模型、隐私、屏蔽、限流
+├── 07_testing/      # 测试：计划、单元、集成、安全、负载
+├── 08_federation/   # 联邦化：ActivityPub、Mastodon
+├── 09_operations/   # 运维：部署、监控、日志
+└── 10_memory/       # 记忆：决策、教训、灵感、未来
 ```
 
 ## 快速导航
 
-| 需求 | 查看 |
+| 问题 | 查看 |
 |------|------|
-| 了解项目是什么 | [README.md](README.md) |
-| 看当前进度 | [TODO.md](TODO.md) |
-| 看未来计划 | [ROADMAP.md](ROADMAP.md) |
-| 看技术架构 | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| 看接口定义 | [API.md](API.md) |
-| 加入开发 | [ONBOARDING.md](ONBOARDING.md) |
+| 项目是什么 | [docs/00_project/VISION.md](docs/00_project/VISION.md) |
+| 当前目标 | [docs/00_project/GOALS.md](docs/00_project/GOALS.md) |
+| 用户怎么走 | [docs/01_product/USER_FLOW.md](docs/01_product/USER_FLOW.md) |
+| 系统怎么运作 | [docs/02_architecture/SYSTEM_OVERVIEW.md](docs/02_architecture/SYSTEM_OVERVIEW.md) |
+| 接口是什么 | [docs/03_backend/API.md](docs/03_backend/API.md) |
+| 图怎么显示 | [docs/01_product/GRAPH_UI.md](docs/01_product/GRAPH_UI.md) |
+| 怎么防攻击 | [docs/06_security/THREAT_MODEL.md](docs/06_security/THREAT_MODEL.md) |
+
+## 仓库
+
+<https://github.com/yumeminekosan/trans-vividcycle>
 
 ---
 
