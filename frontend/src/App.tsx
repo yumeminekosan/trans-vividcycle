@@ -15,7 +15,7 @@ function App() {
   const [personas, setPersonas] = useState<any[]>([]);
   const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
-  const [view, setView] = useState<'home' | 'browse' | 'personas' | 'relations' | 'communities'>('browse');
+  const [view, setView] = useState<'home' | 'personas' | 'relations' | 'communities'>('home');
   const [showAuth, setShowAuth] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || '/api');
@@ -82,13 +82,9 @@ function App() {
     setApiUrl(url);
   };
 
-  const navItems = [
-    { id: 'browse', icon: '🔍', label: '档案浏览' },
-    { id: 'home', icon: '🏠', label: '我的图谱' },
-    { id: 'personas', icon: '👤', label: '角色管理' },
-    { id: 'relations', icon: '🔗', label: '关系网络' },
-    { id: 'communities', icon: '🏘️', label: '社群' },
-  ];
+  if (false) {
+    return <BrowsePage apiUrl={apiUrl} />;
+  }
 
   return (
     <div className="app">
@@ -100,16 +96,22 @@ function App() {
         </div>
 
         <div className="nav-menu">
-          {navItems.map(item => (
-            <div
-              key={item.id}
-              className={`nav-item ${view === item.id ? 'active' : ''}`}
-              onClick={() => setView(item.id as any)}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </div>
-          ))}
+          <div className={`nav-item ${view === 'home' ? 'active' : ''}`} onClick={() => setView('home')}>
+            <span className="nav-icon">🏠</span>
+            <span className="nav-label">我的图谱</span>
+          </div>
+          <div className={`nav-item ${view === 'personas' ? 'active' : ''}`} onClick={() => setView('personas')}>
+            <span className="nav-icon">👤</span>
+            <span className="nav-label">角色管理</span>
+          </div>
+          <div className={`nav-item ${view === 'relations' ? 'active' : ''}`} onClick={() => setView('relations')}>
+            <span className="nav-icon">🔗</span>
+            <span className="nav-label">关系网络</span>
+          </div>
+          <div className={`nav-item ${view === 'communities' ? 'active' : ''}`} onClick={() => setView('communities')}>
+            <span className="nav-icon">🏘️</span>
+            <span className="nav-label">社群</span>
+          </div>
         </div>
 
         <div className="user-section">
@@ -152,8 +154,6 @@ function App() {
           />
         )}
 
-        {view === 'browse' && <BrowsePage apiUrl={apiUrl} />}
-        
         {view === 'home' && (
           <>
             <div className="page-header">
