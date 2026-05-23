@@ -211,14 +211,82 @@ button:disabled {
   justify-content: center;
 }
 
+.recommendation-panel,
+.community-panel {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.recommendation-panel h3,
+.community-panel h3 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.recommendation-section {
+  margin-bottom: 15px;
+}
+
+.recommendation-section h4 {
+  font-size: 0.9rem;
+  color: #34495e;
+  margin-bottom: 8px;
+}
+
+.recommendation-section ul,
+.community-list {
+  list-style: none;
+}
+
+.recommendation-section li,
+.community-list li {
+  padding: 8px;
+  margin-bottom: 5px;
+  background: white;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.community-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.community-info {
+  flex: 1;
+}
+
+.community-info strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.community-type {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #e0e0e0;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  margin-left: 8px;
+}
+
+.community-info p {
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
 @media (max-width: 768px) {
-  main {
-    grid-template-columns: 1fr;
+  .community-list li {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  header {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
+  .community-list li button {
+    margin-top: 10px;
+    width: 100%;
   }
 }

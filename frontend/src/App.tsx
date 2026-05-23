@@ -4,6 +4,8 @@ import GraphView from './components/GraphView';
 import AuthForm from './components/AuthForm';
 import RelationForm from './components/RelationForm';
 import SettingsModal from './components/SettingsModal';
+import RecommendationPanel from './components/RecommendationPanel';
+import CommunityPanel from './components/CommunityPanel';
 import './App.css';
 
 function App() {
@@ -153,6 +155,22 @@ function App() {
               />
             </>
           )}
+          
+          {selectedPersona && (
+            <>
+              <h2>Recommendations</h2>
+              <RecommendationPanel 
+                apiUrl={apiUrl}
+                personaId={selectedPersona.id}
+              />
+            </>
+          )}
+          
+          <h2>Communities</h2>
+          <CommunityPanel 
+            apiUrl={apiUrl}
+            token={token}
+          />
         </section>
         
         <section className="graph-area">

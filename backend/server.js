@@ -222,6 +222,116 @@ fastify.get('/graph/:personaId', async (request) => {
   }
 });
 
+// Recommendation API
+fastify.get('/recommendation/:personaId', async (request) => {
+  const session = driver.session();
+  try {
+    // Find common neighbors (friends of friends)
+    const commonFriendsResult = await session.run(
+      `MATCH (p:Persona {id: $id})-[:RELATION]-(friend)-[:RELATION]-(potential)
+       WHERE p <> potential
+       AND NOT (p)-[:RELATION]-(potential)
+       RETURN potential, count(friend) as common_count
+       ORDER BY common_count DESC
+       LIMIT 10`,
+      { id: request.params.personaId }
+    );
+    
+    // Find by common tags
+    const commonTagsResult = await session.run(
+      `MATCH (p:Persona {id: $id}), (other:Persona)
+       WHERE p <> other
+       AND NOT (p)-[:RELATION]-(other)
+       WITH p, other, 
+            size([tag IN p.tags WHERE tag IN other.tags]) as common_tags
+       WHERE common_tags > 0
+       RETURN other, common_tags
+       ORDER BY common_tags DESC
+       LIMIT 10`,
+      { id: request.params.personaId }
+    );
+    
+    return {
+      common_friends: commonFriendsResult.records.map(r => ({
+        persona: r.get('potential').properties,
+        common_count: r.get('common_count').toNumber()
+      })),
+      common_tags: commonTagsResult.records.map(r => ({
+        persona: r.get('other').properties,
+        common_tags: r.get('common_tags').toNumber()
+      }))
+    };
+  } finally {
+    await session.close();
+  }
+});
+
+// Community API
+fastify.post('/community', { preHandler: authenticate }, async (request) => {
+  const { name, description, type } = request.body;
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `CREATE (c:Community {
+        id: randomUUID(),
+        name: $name,
+        description: $description,
+        type: $type,
+        created_at: datetime()
+      }) RETURN c`,
+      { name, description, type: type || 'group' }
+    );
+    return result.records[0].get('c').properties;
+  } finally {
+    await session.close();
+  }
+});
+
+fastify.get('/communities', async () => {
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      'MATCH (c:Community) RETURN c LIMIT 50'
+    );
+    return result.records.map(r => r.get('c').properties);
+  } finally {
+    await session.close();
+  }
+});
+
+fastify.post('/community/:id/join', { preHandler: authenticate }, async (request) => {
+  const userId = request.user.userId;
+  const session = driver.session();
+  try {
+    await session.run(
+      `MATCH (u:User {id: $userId}), (c:Community {id: $communityId})
+       CREATE (u)-[:MEMBER]->(c)`,
+      { userId, communityId: request.params.id }
+    );
+    return { status: 'joined' };
+  } finally {
+    await session.close();
+  }
+});
+
+// Graph discovery API
+fastify.get('/discover', async (request) => {
+  const { limit = 20 } = request.query;
+  const session = driver.session();
+  try {
+    const result = await session.run(
+      `MATCH (p:Persona)
+       WHERE p.bio IS NOT NULL
+       RETURN p
+       LIMIT $limit`,
+      { limit: parseInt(limit) }
+    );
+    return result.records.map(r => r.get('p').properties);
+  } finally {
+    await session.close();
+  }
+});
+
 // Start server
 const start = async () => {
   try {
