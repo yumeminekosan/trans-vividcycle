@@ -14,7 +14,7 @@ function App() {
   const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
   const [showAuth, setShowAuth] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || 'http://localhost:3000');
+  const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || '/api');
 
   useEffect(() => {
     if (token) {

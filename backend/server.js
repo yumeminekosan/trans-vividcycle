@@ -17,7 +17,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'trans-vividcycle-secret-key';
 
 // CORS
 fastify.register(require('@fastify/cors'), {
-  origin: true
+  origin: true,
+  credentials: true
 });
 
 // Auth middleware

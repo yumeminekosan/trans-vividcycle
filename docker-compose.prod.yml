@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: trans-vividcycle-neo4j
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
+      - NEO4J_PLUGINS=["apoc"]
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: trans-vividcycle-backend
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:-password}
+      - JWT_SECRET=${JWT_SECRET:-trans-vividcycle-secret-key}
+      - NODE_ENV=production
+    depends_on:
+      - neo4j
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: trans-vividcycle-frontend
+    ports:
+      - "127.0.0.1:5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
