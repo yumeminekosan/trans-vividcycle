@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 interface PersonaFormProps {
   apiUrl: string;
+  token: string;
   onPersonaCreated: (persona: any) => void;
 }
 
-function PersonaForm({ apiUrl, onPersonaCreated }: PersonaFormProps) {
+function PersonaForm({ apiUrl, token, onPersonaCreated }: PersonaFormProps) {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [pronouns, setPronouns] = useState('');
@@ -19,7 +20,10 @@ function PersonaForm({ apiUrl, onPersonaCreated }: PersonaFormProps) {
     try {
       const response = await fetch(`${apiUrl}/persona`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           name,
           bio,

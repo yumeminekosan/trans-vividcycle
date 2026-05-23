@@ -17,13 +17,27 @@ body {
 }
 
 header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
 }
 
 header h1 {
   font-size: 2rem;
   color: #2c3e50;
+}
+
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.auth-section span {
+  color: #666;
 }
 
 main {
@@ -43,11 +57,17 @@ main {
 .sidebar h2 {
   font-size: 1.2rem;
   margin-bottom: 15px;
+  margin-top: 25px;
   color: #34495e;
 }
 
-.persona-form {
-  margin-bottom: 30px;
+.sidebar h2:first-child {
+  margin-top: 0;
+}
+
+.persona-form,
+.relation-form {
+  margin-bottom: 20px;
 }
 
 .form-group {
@@ -62,7 +82,8 @@ main {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -71,14 +92,14 @@ main {
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
   outline: none;
   border-color: #3498db;
 }
 
 button {
-  width: 100%;
-  padding: 10px;
+  padding: 10px 20px;
   background: #3498db;
   color: white;
   border: none;
@@ -125,8 +146,79 @@ button:disabled {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.modal h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.error {
+  color: #e74c3c;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #fadbd8;
+  border-radius: 4px;
+}
+
+.toggle-auth {
+  margin-top: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.link-button {
+  background: none;
+  color: #3498db;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 5px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  color: #666;
+  font-size: 1.5rem;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 768px) {
   main {
     grid-template-columns: 1fr;
+  }
+  
+  header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
   }
 }

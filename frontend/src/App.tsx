@@ -1,23 +1,55 @@
 import { useState, useEffect } from 'react';
 import PersonaForm from './components/PersonaForm';
 import GraphView from './components/GraphView';
+import AuthForm from './components/AuthForm';
+import RelationForm from './components/RelationForm';
 import './App.css';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [personas, setPersonas] = useState([]);
   const [selectedPersona, setSelectedPersona] = useState(null);
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
+  const [showAuth, setShowAuth] = useState(false);
 
   const API_URL = 'http://localhost:3000';
 
   useEffect(() => {
-    // Load initial data
-    fetchPersonas();
-  }, []);
+    if (token) {
+      fetchMyPersonas();
+    }
+  }, [token]);
 
-  const fetchPersonas = async () => {
-    // For now, we'll fetch graph data for a specific persona
-    // In MVP, we'll list all personas
+  const fetchMyPersonas = async () => {
+    try {
+      const response = await fetch(`${API_URL}/my/personas`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPersonas(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch personas:', error);
+    }
+  };
+
+  const handleLogin = (userData, authToken) => {
+    setUser(userData);
+    setToken(authToken);
+    localStorage.setItem('token', authToken);
+    setShowAuth(false);
+    fetchMyPersonas();
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('token');
+    setPersonas([]);
+    setSelectedPersona(null);
+    setGraphData({ nodes: [], edges: [] });
   };
 
   const handlePersonaCreated = (persona) => {
@@ -35,19 +67,49 @@ function App() {
     }
   };
 
+  const handleRelationCreated = (relation) => {
+    // Reload graph to show new relation
+    if (selectedPersona) {
+      handleLoadGraph(selectedPersona.id);
+    }
+  };
+
   return (
     <div className="app">
       <header>
         <h1>Queer Relationship Atlas</h1>
+        <div className="auth-section">
+          {user ? (
+            <>
+              <span>Welcome, {user.username}</span>
+              <button onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <button onClick={() => setShowAuth(true)}>Login / Register</button>
+          )}
+        </div>
       </header>
+      
+      {showAuth && (
+        <AuthForm 
+          apiUrl={API_URL}
+          onLogin={handleLogin}
+          onClose={() => setShowAuth(false)}
+        />
+      )}
       
       <main>
         <section className="sidebar">
-          <h2>Create Persona</h2>
-          <PersonaForm 
-            apiUrl={API_URL}
-            onPersonaCreated={handlePersonaCreated}
-          />
+          {token && (
+            <>
+              <h2>Create Persona</h2>
+              <PersonaForm 
+                apiUrl={API_URL}
+                token={token}
+                onPersonaCreated={handlePersonaCreated}
+              />
+            </>
+          )}
           
           <h2>Personas</h2>
           <ul className="persona-list">
@@ -64,6 +126,19 @@ function App() {
               </li>
             ))}
           </ul>
+          
+          {selectedPersona && token && (
+            <>
+              <h2>Create Relation</h2>
+              <RelationForm
+                apiUrl={API_URL}
+                token={token}
+                fromPersona={selectedPersona}
+                allPersonas={personas}
+                onRelationCreated={handleRelationCreated}
+              />
+            </>
+          )}
         </section>
         
         <section className="graph-area">
