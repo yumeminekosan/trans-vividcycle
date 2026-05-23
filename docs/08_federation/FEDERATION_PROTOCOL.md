@@ -1,6 +1,6 @@
 # 联邦协议
 
-> ActivityPub、Mastodon、Bluesky
+> 怎么联邦
 
 ## 协议
 
