@@ -3,6 +3,7 @@ import PersonaForm from './components/PersonaForm';
 import GraphView from './components/GraphView';
 import AuthForm from './components/AuthForm';
 import RelationForm from './components/RelationForm';
+import SettingsModal from './components/SettingsModal';
 import './App.css';
 
 function App() {
@@ -12,8 +13,8 @@ function App() {
   const [selectedPersona, setSelectedPersona] = useState<any | null>(null);
   const [graphData, setGraphData] = useState<{ nodes: any[], edges: any[] }>({ nodes: [], edges: [] });
   const [showAuth, setShowAuth] = useState(false);
-
-  const API_URL = 'http://localhost:3000';
+  const [showSettings, setShowSettings] = useState(false);
+  const [apiUrl, setApiUrl] = useState(localStorage.getItem('api_url') || 'http://localhost:3000');
 
   useEffect(() => {
     if (token) {
@@ -23,7 +24,7 @@ function App() {
 
   const fetchMyPersonas = async () => {
     try {
-      const response = await fetch(`${API_URL}/my/personas`, {
+      const response = await fetch(`${apiUrl}/my/personas`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -59,7 +60,7 @@ function App() {
 
   const handleLoadGraph = async (personaId: string) => {
     try {
-      const response = await fetch(`${API_URL}/graph/${personaId}`);
+      const response = await fetch(`${apiUrl}/graph/${personaId}`);
       const data = await response.json();
       setGraphData(data);
     } catch (error) {
@@ -74,6 +75,10 @@ function App() {
     }
   };
 
+  const handleApiUrlChange = (url: string) => {
+    setApiUrl(url);
+  };
+
   return (
     <div className="app">
       <header>
@@ -82,6 +87,7 @@ function App() {
           {user ? (
             <>
               <span>Welcome, {user.username}</span>
+              <button onClick={() => setShowSettings(true)}>⚙️</button>
               <button onClick={handleLogout}>Logout</button>
             </>
           ) : (
@@ -90,9 +96,17 @@ function App() {
         </div>
       </header>
       
+      {showSettings && (
+        <SettingsModal 
+          apiUrl={apiUrl}
+          onSave={handleApiUrlChange}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+      
       {showAuth && (
         <AuthForm 
-          apiUrl={API_URL}
+          apiUrl={apiUrl}
           onLogin={handleLogin}
           onClose={() => setShowAuth(false)}
         />
@@ -104,7 +118,7 @@ function App() {
             <>
               <h2>Create Persona</h2>
               <PersonaForm 
-                apiUrl={API_URL}
+                apiUrl={apiUrl}
                 token={token}
                 onPersonaCreated={handlePersonaCreated}
               />
@@ -131,7 +145,7 @@ function App() {
             <>
               <h2>Create Relation</h2>
               <RelationForm
-                apiUrl={API_URL}
+                apiUrl={apiUrl}
                 token={token}
                 fromPersona={selectedPersona}
                 allPersonas={personas}
