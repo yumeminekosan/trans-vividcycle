@@ -2,15 +2,6 @@
 
 > 回答：用户实际会看到什么
 
-## 子目录
-
-| 目录 | 内容 |
-|------|------|
-| concept/ | 概念设计 |
-| ux/ | 用户体验 |
-| lore/ | 世界观/背景 |
-| moderation/ | 内容审核 |
-
 ## 文件
 
 | 文件 | 回答 |
@@ -22,6 +13,15 @@
 | RELATION_SYSTEM.md | 关系是什么 |
 | GRAPH_UI.md | 图怎么显示 |
 | MODERATION.md | 怎么审核 |
+
+## 相关目录
+
+| 目录 | 位置 |
+|------|------|
+| 概念设计 | docs/concept/ |
+| 用户体验 | docs/ux/ |
+| 世界观 | docs/lore/ |
+| 内容审核 | docs/moderation/ |
 
 ---
 

@@ -7,18 +7,7 @@
 ```
 docs/
 ├── 00_project/          # 项目层：愿景、目标、路线图、哲学
-│   ├── VISION.md
-│   ├── GOALS.md
-│   ├── ROADMAP.md
-│   ├── NON_GOALS.md
-│   ├── DECISIONS.md
-│   ├── PHILOSOPHY.md
-│   └── GLOSSARY.md
 ├── 01_product/          # 产品层：用户看到什么
-│   ├── concept/         # 概念设计
-│   ├── ux/              # 用户体验
-│   ├── lore/            # 世界观/背景
-│   ├── moderation/        # 内容审核
 │   ├── USER_FLOW.md
 │   ├── FEATURE_LIST.md
 │   ├── UX_RULES.md
@@ -33,9 +22,14 @@ docs/
 ├── 06_security/         # 安全
 ├── 07_testing/          # 测试
 ├── 08_federation/       # 联邦化
-│   └── federation/      # 联邦协议细节
+│   └── FEDERATION_PROTOCOL.md
 ├── 09_operations/       # 运维
-└── 10_memory/           # 记忆
+├── 10_memory/           # 记忆
+├── concept/             # 概念设计
+├── ux/                  # 用户体验
+├── lore/                # 世界观/背景
+├── moderation/          # 内容审核
+└── federation/          # 联邦协议细节
 ```
 
 ## 快速导航
